@@ -1,4 +1,4 @@
 Authors
 =======
 
-Timothy Solomon <timothy@spiraleye.com>
+Timothy Solomon <spiraleye.com>
