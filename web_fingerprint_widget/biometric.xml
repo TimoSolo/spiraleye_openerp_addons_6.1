@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		  <record model="ir.ui.view" id="view_biometric_form">
+			<field name="name">Biometrics</field>
+			<field name="model">biometric</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+			    <form string="Biometrics">
+                    <field name="name" invisible="1" />
+                    <!-- <field name="type"  />
+                    <field name="type_id"  /> -->
+                    <field name="fingerprints" colspan="4" nolabel="1" widget="biometric_confirm" />
+                    <field name="last_scanned" invisible="1" />
+                    <html>
+                        <style>
+                            /* hack to hide column */
+                            [data-id="fingerprint_data"],
+                            [data-field="fingerprint_data"] { 
+                                overflow: hidden&#59;
+                                padding: 0px !important&#59;
+                                text-indent: -9999px&#59;
+                                width: 0&#59;
+                            }
+                        </style>
+                    </html>
+			    </form>
+			</field>
+		    </record>
+
+            <record model="ir.ui.view" id="view_finger_form">
+            <field name="name">Fingerprint</field>
+            <field name="model">biometric.fingerprint</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Fingerprint">
+                    <field name="name" />
+                    <newline />
+                    <field name="other" attrs="{'invisible': [('name', '!=', 'O1')],'required': [('name', '=', 'O1')]}" />
+                    <newline />
+                    <field name="fingerprint_data" colspan="4" widget="fingerprint" />
+                </form>
+            </field>
+            </record>
+
+            <record model="ir.ui.view" id="view_finger_tree">
+            <field name="name">Fingerprint</field>
+            <field name="model">biometric.fingerprint</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <form string="Fingerprints">
+                    <field name="name" />
+                    <field name="create_date" />
+                    <field name="create_uid" />
+                    <field name="fingerprint_data" invisible="0" />
+                </form>
+            </field>
+            </record>
+
+	</data>
+</openerp>

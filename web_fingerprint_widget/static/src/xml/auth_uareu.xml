@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vim:fdl=1: -->
+<templates id="template" xml:space="preserve">
+
+    <t t-extend="Login">
+        <t t-jquery=".login .pane form ul" t-operation="after">
+            <div>
+
+                <script type="text/javascript">
+    //Get browser info
+     var _app = navigator.appName;
+
+        var pressCount = 0;
+
+        //Events section
+       
+        //Fired during internal error
+        function onErrorHandler(code) {
+            alert("Error:" + code);
+        }
+
+        function onDisconnectedHandler() {
+            setTimeout('document.getElementById("divInstruction").innerHTML="<b>Reader disconnected.<br/>  Please connect reader. </b>"');
+        }
+
+        function onConnectedHandler() {
+            setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+            setTimeout("document.getElementById('divInstruction').innerHTML='<b>Scan finger...</b>';");
+        }
+
+        function onCaptureHandler() {
+            pressCount += 1;
+            document.getElementById('appletImage').src = "/web_fingerprint_widget/static/src/images/over.jpg";
+            setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+            setTimeout("document.getElementById('divInstruction').innerHTML='<b>Press finger " + (4 -pressCount) + " more times</b>';");
+        }
+
+        function onEnrollmentFailureHandler() {
+        }
+
+
+    function verify_onCaptureHandler() {
+        document.getElementById('appletImage').src = "/web_fingerprint_widget/static/src/images/over.jpg";
+        setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+    }
+    function onLoadHandler()
+         {
+        }
+    
+    function verify_onFMDHandler(hexFMD) {
+            jQuery(".pane :password").val(hexFMD).change();
+            jQuery("input[name=login]").val(jQuery("input[name=login]").val() || "fingerprint").change();
+            jQuery(".pane form").submit(); // submit form
+
+         }
+</script>
+       <div id="finger_app"></div>
+            </div>
+        </t>
+    </t>
+
+</templates>

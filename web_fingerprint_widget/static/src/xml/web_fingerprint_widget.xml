@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="biometric">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+            <td width="100%" valign="top" align="center">
+    
+                <img id="biometric_image" align="center" src="/web_fingerprint_widget/static/src/images/enroll.jpg" style="cursor:pointer" />
+            </td>
+        </tr>
+        </table>
+    </t>
+
+<t t-name="biometric_confirm">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+            <td width="100%" valign="top">
+                <script type="text/javascript">
+    //Get browser info
+        
+        var _app = navigator.appName;
+
+        var pressCount = 0;
+
+        //Events section
+       
+        //Fired during internal error
+        function onErrorHandler(code) {
+            alert("Error:" + code);
+        }
+
+        function onDisconnectedHandler() {
+            setTimeout('document.getElementById("divInstruction").innerHTML="<b>Reader disconnected.<br/>  Please connect reader. </b>"');
+        }
+
+        function onConnectedHandler() {
+            setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+            setTimeout("document.getElementById('divInstruction').innerHTML='<b>Press finger " + (4 - pressCount) + " more times</b>';");
+        }
+
+        function onCaptureHandler() {
+            pressCount += 1;
+            document.getElementById('appletImage').src = "/web_fingerprint_widget/static/src/images/over.jpg";
+            setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+            setTimeout("document.getElementById('divInstruction').innerHTML='<b>Press finger " + (4 -pressCount) + " more times</b>';");
+        }
+
+        function onEnrollmentFailureHandler() {
+            // alert("Enrollment failed.  Please be sure to use the same finger for each of the 4 presses or try to register a different finger.");
+            pressCount = 0;
+            document.getElementById('divInstruction').innerHTML = "Enrollment failed.  Please be sure to use the same finger for each of the 4 presses or try to register a different finger.<br/><b>Press your finger 4 times to the sensor.</b>";
+        }
+
+
+    function verify_onCaptureHandler() {
+        document.getElementById('appletImage').src = "/web_fingerprint_widget/static/src/images/over.jpg";
+        setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+    }
+    function onLoadHandler()
+         {
+            if ($('[data-field="fingerprint_data"]').length > 0) {
+                var fmds = $('[data-field="fingerprint_data"]').map(function() { return this.innerHTML.trim(); }).get().join(','); // get data in csv
+                document.UareUApplet.setVerificationStr(fmds);
+            } else {
+                // try later
+                if (document.UareUApplet)
+                    t=setTimeout(function(){
+                    onLoadHandler(); // save the form
+                    },1000);
+            }
+        }
+    
+    function verify_onFMDHandler(ok) {
+            ok = parseInt(ok);
+            window.bio_confirmed = ok; // bad.. set global var to save if confirmed
+            msg = "No match found. Please scan a registered finger.";
+            if (ok>0) {
+                msg = "CONFIRMED: Match found with "+ $('.oe_form_field_biometric_confirm [data-field="name"]:eq('+(ok-1)+')').html().trim();
+            }
+            document.getElementById('divInstruction').innerHTML = "<b>"+msg+"</b>";
+            
+            if (ok)
+            {
+               
+                // set last date scanned, click save button
+
+                $('input[name="last_scanned"]').val(new Date().toLocaleString()).change(); // "change" forces save
+                t=setTimeout(function(){
+                if (document.UareUApplet)
+                    $('.oe_formopenpopup-form-save').click(); // save the form
+                },2000)
+                
+            }
+            
+         }
+         
+    </script>    
+    <div id="finger_app"></div>
+                <t t-call="FieldOne2Many"/>
+            </td>
+        </tr>
+        </table>
+    </t>
+
+<t t-name="fingerprint">
+    <script type="text/javascript">
+    //Get browser info
+        
+        var _app = navigator.appName;
+
+        var pressCount = 0;
+
+        //Events section
+       
+        //Fired during internal error
+        function onErrorHandler(code) {
+            alert("Error:" + code);
+        }
+
+        function onDisconnectedHandler() {
+            setTimeout('document.getElementById("divInstruction").innerHTML="<b>Reader disconnected.<br/>  Please connect reader. </b>"');
+        }
+
+        function onConnectedHandler() {
+            setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+            setTimeout("document.getElementById('divInstruction').innerHTML='<b>Press finger " + (4 - pressCount) + " more times</b>';");
+        }
+
+        function onCaptureHandler() {
+            pressCount += 1;
+            document.getElementById('appletImage').src = "/web_fingerprint_widget/static/src/images/over.jpg";
+            setTimeout("document.getElementById('appletImage').src='/web_fingerprint_widget/static/src/images/up.jpg';", 500);
+            setTimeout("document.getElementById('divInstruction').innerHTML='<b>Press finger " + (4 -pressCount) + " more times</b>';");
+        }
+
+        function onEnrollmentFailureHandler() {
+            // alert("Enrollment failed.  Please be sure to use the same finger for each of the 4 presses or try to register a different finger.");
+            pressCount = 0;
+            document.getElementById('divInstruction').innerHTML = "Enrollment failed.  Please be sure to use the same finger for each of the 4 presses or try to register a different finger.<br/><b>Press your finger 4 times to the sensor.</b>";
+        }
+
+
+        function onFMDHandler( hexFMD ) {
+            jQuery(".field_fingerprint").val(hexFMD).change();
+            pressCount = 0;
+            document.getElementById('divInstruction').innerHTML = "<b>Fingerprint successfully captured.</b>";
+            document.getElementById('appletImage').innerHTML = ""; // maybe later show image instead
+            // document.getElementById('finger_app').innerHTML = ""; // remove java app..
+            // auto save and close popup?
+            // alert('Captured successfully');
+            
+         }
+         
+         function onLoadHandler()
+         {
+            // loaded.. 
+        }
+
+         
+    </script>    
+    <div id="finger_app">data captured</div>
+       
+    <textarea rows="1" style="display:block; position:absolute; left:-9999px;"
+        t-att-name="widget.name"
+        t-att-id="widget.element_id"
+        t-att-maxlength="widget.field.size"
+        t-attf-class="field_#{widget.type}"
+    ></textarea>
+</t>
+
+
+</templates> 
